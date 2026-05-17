@@ -160,13 +160,80 @@
     <span style="font-size:22px">🍽️</span>
     <div>
       <p class="modal-title">AJOUTER UN REPAS</p>
-      <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.3);margin-top:2px">Recherche un aliment</p>
+      <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.3);margin-top:2px">Recherche ou crée un aliment</p>
     </div>
     <button class="modal-close" onclick="closeFoodModal()">×</button>
   </div>
   <div class="modal-body">
-    <input class="search-input" id="foodSearch" placeholder="> Poulet, riz, yaourt..." oninput="searchFood(this.value)" />
+    <input class="search-input" id="foodSearch" placeholder="> Poulet, riz, chips..." oninput="searchFood(this.value)" />
+    <button onclick="openCustomFood()" style="width:100%;margin-top:10px;padding:13px;border-radius:14px;border:1px dashed rgba(0,255,65,0.2);background:transparent;color:#00ff41;font-family:var(--mono);font-size:12px;cursor:pointer;letter-spacing:1px">
+      ✚ CRÉER UN ALIMENT PERSONNALISÉ
+    </button>
     <div id="foodResults" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- CUSTOM FOOD MODAL -->
+<div id="customFoodModal" class="modal" style="display:none">
+  <div class="modal-header">
+    <span style="font-size:22px">✚</span>
+    <div>
+      <p class="modal-title">NOUVEL ALIMENT</p>
+      <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.3);margin-top:2px">Saisis les infos nutritionnelles</p>
+    </div>
+    <button class="modal-close" onclick="closeCustomFood()">×</button>
+  </div>
+  <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding-top:10px">
+
+    <div>
+      <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.35);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Nom de l'aliment</p>
+      <input id="customName" class="search-input" placeholder="> Chips Carrefour, Gâteau..." />
+    </div>
+
+    <div>
+      <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.35);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Calories (kcal pour 100g)</p>
+      <input id="customKcal" class="search-input" type="number" placeholder="> 527" />
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Protéines (g)</p>
+        <input id="customP" class="search-input" type="number" placeholder="> 6.5" />
+      </div>
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Glucides (g)</p>
+        <input id="customG" class="search-input" type="number" placeholder="> 53" />
+      </div>
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Lipides (g)</p>
+        <input id="customL" class="search-input" type="number" placeholder="> 31" />
+      </div>
+    </div>
+
+    <div>
+      <p style="font-family:var(--mono);font-size:10px;color:rgba(0,255,65,0.35);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Quantité mangée (g)</p>
+      <input id="customQty" class="search-input" type="number" placeholder="> 10" value="100" />
+    </div>
+
+    <!-- Aperçu calories -->
+    <div id="customPreview" style="background:rgba(0,255,65,0.04);border:1px solid rgba(0,255,65,0.1);border-radius:16px;padding:16px;text-align:center;display:none">
+      <p style="font-family:var(--mono);font-size:36px;color:#00ff41;text-shadow:0 0 20px rgba(0,255,65,0.4)" id="customKcalResult">—</p>
+      <p style="font-family:var(--mono);font-size:11px;color:rgba(0,255,65,0.3);margin-top:4px">KCAL POUR TA PORTION</p>
+      <div style="display:flex;gap:20px;justify-content:center;margin-top:10px" id="customMacroPreview"></div>
+    </div>
+
+    <button onclick="calculateCustomPreview()" style="padding:13px;border-radius:14px;border:1px solid rgba(0,255,65,0.2);background:rgba(0,255,65,0.06);color:#00ff41;font-family:var(--mono);font-size:12px;cursor:pointer;letter-spacing:1px">
+      🔢 CALCULER
+    </button>
+
+    <button onclick="confirmCustomFood()" style="padding:14px;border-radius:14px;border:none;background:rgba(0,255,65,0.15);color:#00ff41;font-family:var(--mono);font-size:13px;cursor:pointer;letter-spacing:1px;font-weight:700">
+      ✓ AJOUTER À MON JOURNAL
+    </button>
+
+    <button onclick="saveCustomToList()" style="padding:13px;border-radius:14px;border:1px dashed rgba(0,255,65,0.15);background:transparent;color:rgba(0,255,65,0.5);font-family:var(--mono);font-size:11px;cursor:pointer;letter-spacing:1px">
+      💾 SAUVEGARDER DANS MA LISTE
+    </button>
+
   </div>
 </div>
 
@@ -666,6 +733,55 @@ function confirmFood() {
 }
 
 function closeQtyModal() { document.getElementById('qtyModal').style.display='none'; }
+
+// 250025002500 CUSTOM FOOD 2500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
+function openCustomFood() {
+  closeFoodModal();
+  ['customName',''customKcal,''customP,''customG,''customL].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('customQty').value='100';
+  document.getElementById('customPreview').style.display='none';
+  document.getElementById('customFoodModal').style.display='flex';
+}
+function closeCustomFood() { document.getElementById('customFoodModal').style.display='none'; }
+function calculateCustomPreview() {
+  const k=parseFloat(document.getElementById('customKcal').value)||0;
+  const p=parseFloat(document.getElementById('customP').value)||0;
+  const g=parseFloat(document.getElementById('customG').value)||0;
+  const l=parseFloat(document.getElementById('customL').value)||0;
+  const qty=parseFloat(document.getElementById('customQty').value)||100;
+  const r=qty/100;
+  document.getElementById('customKcalResult').textContent=Math.round(k*r);
+  document.getElementById('customMacroPreview').innerHTML=`<div style="text-align:center"><p style="font-family:var(--mono);font-size:14px;color:#00ff41">${Math.round(p*r*10)/10}g</p><p style="font-family:var(--mono);font-size:9px;color:rgba(0,255,65,0.3)">Prot.</p></div><div style="text-align:center"><p style="font-family:var(--mono);font-size:14px;color:#fcd34d">${Math.round(g*r*10)/10}g</p><p style="font-family:var(--mono);font-size:9px;color:rgba(0,255,65,0.3)">Gluc.</p></div><div style="text-align:center"><p style="font-family:var(--mono);font-size:14px;color:#fb923c">${Math.round(l*r*10)/10}g</p><p style="font-family:var(--mono);font-size:9px;color:rgba(0,255,65,0.3)">Lip.</p></div>`;
+  document.getElementById('customPreview').style.display='block';
+}
+function confirmCustomFood() {
+  const name=document.getElementById('customName').value.trim();
+  const k=parseFloat(document.getElementById('customKcal').value)||0;
+  const p=parseFloat(document.getElementById('customP').value)||0;
+  const g=parseFloat(document.getElementById('customG').value)||0;
+  const l=parseFloat(document.getElementById('customL').value)||0;
+  const qty=parseFloat(document.getElementById('customQty').value)||100;
+  if(!name||!k){showToast('⚠️ Nom et calories requis !');return;}
+  const r=qty/100, kcal=Math.round(k*r);
+  const day=getToday();
+  day.repas.push({name,icon:'🍽️',qty,kcal,p:Math.round(p*r*10)/10,g:Math.round(g*r*10)/10,l:Math.round(l*r*10)/10});
+  day.totalKcal=day.repas.reduce((s,r)=>s+r.kcal,0);
+  saveDay(day); closeCustomFood(); showToast(`+${kcal} kcal ajoutées ✓`); renderAll();
+}
+function saveCustomToList() {
+  const name=document.getElementById('customName').value.trim();
+  const k=parseFloat(document.getElementById('customKcal').value)||0;
+  const p=parseFloat(document.getElementById('customP').value)||0;
+  const g=parseFloat(document.getElementById('customG').value)||0;
+  const l=parseFloat(document.getElementById('customL').value)||0;
+  if(!name||!k){showToast('⚠️ Nom et calories requis !');return;}
+  const custom=JSON.parse(localStorage.getItem('neo_custom_foods')||'[]');
+  custom.push({n:name,e:'🍽️',k,p,g,l,u:'100g'});
+  localStorage.setItem('neo_custom_foods',JSON.stringify(custom));
+  FOODS.push({n:name,e:'🍽️',k,p,g,l,u:'100g'});
+  showToast(`💾 "${name}" sauvegardé !`);
+  confirmCustomFood();
+}
 function removeRepas(i) { const day=getToday(); day.repas.splice(i,1); day.totalKcal=day.repas.reduce((s,r)=>s+r.kcal,0); saveDay(day); renderAll(); }
 
 // ─── SPORT MODAL ──────────────────────────────────────────────────────────────
